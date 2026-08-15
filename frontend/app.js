@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             student.courses.forEach(c => {
                 const chip = document.createElement('span');
                 chip.className = 'course-chip';
-                chip.innerHTML = `${c.course_name} (${c.credits}cr) <span class="course-chip-delete" data-action="delete-course" data-course-id="${c.id}" data-student-id="${student.id}" title="Remove course">&times;</span>`;
+                chip.innerHTML = `${c.course_name} <span class="course-chip-delete" data-action="delete-course" data-course-id="${c.id}" data-student-id="${student.id}" title="Remove course">&times;</span>`;
                 coursesList.appendChild(chip);
             });
         } else {
@@ -180,24 +180,14 @@ document.addEventListener('DOMContentLoaded', () => {
             coursesList.appendChild(noCourses);
         }
 
-        // Inline Add Course Form
+        // Simplified Add Course Form (No confusing credit select for beginners)
         const addCourseForm = document.createElement('div');
         addCourseForm.className = 'add-course-form';
 
         const courseInput = document.createElement('input');
         courseInput.type = 'text';
-        courseInput.placeholder = 'New Course...';
+        courseInput.placeholder = 'Add Course (e.g. Python)...';
         courseInput.className = 'course-name-input';
-
-        const creditsSelect = document.createElement('select');
-        creditsSelect.className = 'credits-select';
-        for (let i = 1; i <= 6; i++) {
-            const opt = document.createElement('option');
-            opt.value = i;
-            opt.textContent = `${i} cr`;
-            if (i === 3) opt.selected = true;
-            creditsSelect.appendChild(opt);
-        }
 
         const addCourseBtn = document.createElement('button');
         addCourseBtn.type = 'button';
@@ -207,7 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
         addCourseBtn.setAttribute('data-id', student.id);
 
         addCourseForm.appendChild(courseInput);
-        addCourseForm.appendChild(creditsSelect);
         addCourseForm.appendChild(addCourseBtn);
 
         coursesSec.appendChild(coursesHeader);
@@ -362,9 +351,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const studentId = parseInt(addCourseBtn.getAttribute('data-id'), 10);
                 const cardEl = addCourseBtn.closest('.student-card');
                 const nameInput = cardEl.querySelector('.course-name-input');
-                const creditsSelect = cardEl.querySelector('.credits-select');
                 const courseName = nameInput.value.trim();
-                const credits = parseInt(creditsSelect.value, 10);
+                const credits = 3; // Default 3 credits for academic course
 
                 if (!courseName) {
                     showError('Please enter a course name.');
