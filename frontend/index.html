@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="StudyTrack AI - Intelligent Full-Stack Learning and Trainee Management Platform">
+    <title>StudyTrack AI — Trainee Management Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-group">
+                <span class="logo-icon">⚡</span>
+                <h1>StudyTrack AI</h1>
+            </div>
+            <p class="tagline">Intelligent Full-Stack Learning & Trainee Management Platform</p>
+        </header>
+
+        <!-- Global Error Banner -->
+        <div id="error-banner" class="error-banner hidden" role="alert">
+            <span id="error-message">An error occurred.</span>
+            <button id="close-error-btn" class="close-banner-btn" aria-label="Close error banner">&times;</button>
+        </div>
+
+        <main class="dashboard-grid">
+            <!-- Left Column: Controls & Add Form -->
+            <section class="sidebar-section">
+                <!-- Add Student Form Card -->
+                <div class="card form-card">
+                    <h2>Add New Student</h2>
+                    <form id="student-form" class="student-form" novalidate>
+                        <div class="form-group">
+                            <label for="student-name">Full Name</label>
+                            <input type="text" id="student-name" placeholder="e.g. Aditi Rao" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="student-email">Email Address</label>
+                            <input type="email" id="student-email" placeholder="e.g. aditi.rao@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="student-age">Age</label>
+                            <input type="number" id="student-age" min="1" placeholder="e.g. 22" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="add-student-btn">+ Add Student</button>
+                    </form>
+                </div>
+
+                <!-- Algorithms Toolbar -->
+                <div class="card toolbar-card">
+                    <h2>Roster Operations</h2>
+                    <div class="toolbar-actions">
+                        <div class="form-group">
+                            <label for="sort-by-select">Sort Roster By</label>
+                            <select id="sort-by-select" class="form-control">
+                                <option value="default">Default Order</option>
+                                <option value="age">Age (Ascending - Insertion Sort)</option>
+                                <option value="name">Name (Alphabetical - Insertion Sort)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group search-box-group">
+                            <label for="binary-search-input">Binary Search by Name</label>
+                            <div class="input-with-button">
+                                <input type="text" id="binary-search-input" placeholder="Exact student name...">
+                                <button type="button" id="search-student-btn" class="btn btn-secondary">Search</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group report-box-group">
+                            <label for="min-age-report-input">Age Filter & Roster Report</label>
+                            <div class="input-with-button">
+                                <input type="number" id="min-age-report-input" min="1" value="21" placeholder="Min age...">
+                                <button type="button" id="generate-report-btn" class="btn btn-accent">Generate Report</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Report Display Box -->
+                    <div id="report-output" class="report-output hidden"></div>
+                </div>
+            </section>
+
+            <!-- Right Column: Student Roster & AI Panel -->
+            <section class="main-content-section">
+                <!-- Roster Section -->
+                <div class="card roster-section-card">
+                    <div class="roster-header">
+                        <h2>Student Roster</h2>
+                        <span id="roster-count-badge" class="badge">0 Students</span>
+                    </div>
+
+                    <!-- Roster List Container -->
+                    <div id="roster-list" class="roster-grid">
+                        <!-- Student cards rendered via JS document.createElement() -->
+                    </div>
+                </div>
+
+                <!-- AI Helper Panel Section -->
+                <div class="card ai-panel-card" id="ai-helper-panel">
+                    <div class="ai-header">
+                        <span class="ai-badge">🤖 AI Offline Service</span>
+                        <h2>AI Study Assistant</h2>
+                    </div>
+
+                    <!-- Note Summarizer Section -->
+                    <div class="ai-sub-section">
+                        <h3>Study Note Summarizer</h3>
+                        <div class="form-group">
+                            <label for="ai-note-text">Paste Lecture / Study Notes</label>
+                            <textarea id="ai-note-text" rows="4" placeholder="Enter study notes here... (e.g. Insertion sort builds a sorted list one element at a time.)"></textarea>
+                        </div>
+                        <button type="button" id="summarize-btn" class="btn btn-ai">Summarize Notes</button>
+
+                        <div id="summary-result" class="ai-result-box hidden">
+                            <div class="result-header">
+                                <span class="result-title">Summary Output</span>
+                                <span id="summary-difficulty" class="badge difficulty-badge">easy</span>
+                            </div>
+                            <div class="result-body">
+                                <p><strong>Topic:</strong> <span id="summary-topic">--</span></p>
+                                <div class="key-points-group">
+                                    <strong>Key Points:</strong>
+                                    <ul id="summary-keypoints"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vector Semantic Search Section -->
+                    <div class="ai-sub-section">
+                        <h3>Semantic Knowledge Base Search</h3>
+                        <div class="form-group">
+                            <label for="ai-search-query">Query AI Note Embeddings</label>
+                            <div class="input-with-button">
+                                <input type="text" id="ai-search-query" placeholder="e.g. binary search midpoint or sql join">
+                                <button type="button" id="ai-search-btn" class="btn btn-ai">Search Notes</button>
+                            </div>
+                        </div>
+
+                        <div id="ai-search-results" class="ai-search-results-container hidden">
+                            <h4>Ranked Search Results (Cosine Similarity)</h4>
+                            <div id="ranked-notes-list" class="ranked-notes-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
