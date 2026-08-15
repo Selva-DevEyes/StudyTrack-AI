@@ -1,5 +1,6 @@
 /* ==========================================================================
-   StudyTrack AI - Modern CSS Styling System
+   StudyTrack AI - Core Vanilla CSS Design System
+   Dual Theme (Dark/Light), Responsive Breakpoints & Professional Aesthetics
    ========================================================================== */
 
 /* Global Reset & Box Model */
@@ -9,35 +10,83 @@
     padding: 0;
 }
 
-:root {
-    --bg-color: #0f172a;
-    --card-bg: #1e293b;
-    --card-border: #334155;
+/* ==========================================================================
+   Theme Variables (Dark Mode Default vs Light Mode)
+   ========================================================================== */
+
+:root, [data-theme="dark"] {
+    --bg-color: #0b0f19;
+    --app-header-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    --card-bg: #151d2a;
+    --card-border: #263346;
     --card-hover-border: #3b82f6;
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
+    --input-bg: #0b0f19;
+    --input-border: #334155;
+    --input-text: #f8fafc;
+    
     --accent-blue: #3b82f6;
     --accent-blue-hover: #2563eb;
     --accent-purple: #8b5cf6;
     --accent-purple-hover: #7c3aed;
     --accent-emerald: #10b981;
-    --accent-amber: #f59e0b;
+    --accent-emerald-hover: #059669;
     --accent-rose: #ef4444;
     --accent-rose-hover: #dc2626;
+    
+    --stat-card-bg: rgba(30, 41, 59, 0.6);
+    --stat-border: rgba(255, 255, 255, 0.08);
+    --badge-bg: #263346;
+    --badge-text: #cbd5e1;
+
     --error-bg: #450a0a;
     --error-border: #dc2626;
     --error-text: #fca5a5;
-    --input-bg: #0f172a;
-    --input-border: #475569;
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 16px;
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+    
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+[data-theme="light"] {
+    --bg-color: #f1f5f9;
+    --app-header-bg: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+    --card-bg: #ffffff;
+    --card-border: #cbd5e1;
+    --card-hover-border: #2563eb;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --input-bg: #f8fafc;
+    --input-border: #cbd5e1;
+    --input-text: #0f172a;
+
+    --accent-blue: #2563eb;
+    --accent-blue-hover: #1d4ed8;
+    --accent-purple: #7c3aed;
+    --accent-purple-hover: #6d28d9;
+    --accent-emerald: #059669;
+    --accent-emerald-hover: #047857;
+    --accent-rose: #dc2626;
+    --accent-rose-hover: #b91c1c;
+
+    --stat-card-bg: rgba(241, 245, 249, 0.9);
+    --stat-border: rgba(0, 0, 0, 0.08);
+    --badge-bg: #e2e8f0;
+    --badge-text: #334155;
+
+    --error-bg: #fef2f2;
+    --error-border: #fca5a5;
+    --error-text: #991b1b;
+
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Global Body Styling */
 body {
     font-family: var(--font-family);
     background-color: var(--bg-color);
@@ -45,23 +94,38 @@ body {
     line-height: 1.5;
     padding: 24px 16px;
     min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .app-container {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     gap: 24px;
 }
 
-/* Header Section */
+/* ==========================================================================
+   Header & Stats Section
+   ========================================================================== */
+
 .app-header {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    background: var(--app-header-bg);
     border: 1px solid var(--card-border);
-    border-radius: var(--radius-lg);
+    border-radius: 16px;
     padding: 24px 32px;
     box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
 }
 
 .logo-group {
@@ -71,34 +135,95 @@ body {
 }
 
 .logo-icon {
-    font-size: 2rem;
+    font-size: 2.2rem;
 }
 
 h1 {
     font-size: 2.2rem;
-    font-weight: 700;
-    background: linear-gradient(90deg, #60a5fa, #c084fc);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    word-break: keep-all;
+    white-space: nowrap;
 }
 
 .tagline {
     color: var(--text-secondary);
     font-size: 0.95rem;
-    margin-top: 4px;
+    font-weight: 500;
 }
 
-/* Error Banner */
+/* Theme Toggle Button */
+.theme-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    padding: 8px 16px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.theme-toggle-btn:hover {
+    border-color: var(--accent-blue);
+    transform: translateY(-1px);
+}
+
+/* Header Quick Stats Bar */
+.stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.stat-card {
+    background: var(--stat-card-bg);
+    border: 1px solid var(--stat-border);
+    padding: 12px 18px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.stat-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--accent-blue);
+}
+
+/* ==========================================================================
+   Global Error Banner
+   ========================================================================== */
+
 .error-banner {
     background-color: var(--error-bg);
     border: 1px solid var(--error-border);
     color: var(--error-text);
-    padding: 12px 20px;
-    border-radius: var(--radius-md);
+    padding: 14px 20px;
+    border-radius: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.9rem;
     animation: fadeIn 0.3s ease;
 }
 
@@ -116,10 +241,13 @@ h1 {
     display: none !important;
 }
 
-/* Dashboard Layout Grid */
+/* ==========================================================================
+   Dashboard Grid Layout (Prevents Overflow/Overlap)
+   ========================================================================== */
+
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 360px 1fr;
+    grid-template-columns: 340px 1fr;
     gap: 24px;
     align-items: start;
 }
@@ -136,35 +264,44 @@ h1 {
     gap: 24px;
 }
 
-/* Common Card Styles */
+/* Card Container Base Styling */
 .card {
     background-color: var(--card-bg);
     border: 1px solid var(--card-border);
-    border-radius: var(--radius-lg);
+    border-radius: 16px;
     padding: 24px;
     box-shadow: var(--shadow-sm);
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
 }
 
 .card:hover {
     border-color: var(--card-hover-border);
 }
 
+.card-header {
+    margin-bottom: 18px;
+
+}
+
 h2 {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 16px;
+    word-break: keep-all;
 }
 
 h3 {
     font-size: 1.05rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 12px;
 }
 
-/* Form Styles */
+/* ==========================================================================
+   Forms & Controls
+   ========================================================================== */
+
 .form-group {
     display: flex;
     flex-direction: column;
@@ -173,19 +310,20 @@ h3 {
 }
 
 label {
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.83rem;
+    font-weight: 600;
     color: var(--text-secondary);
 }
 
 input, select, textarea {
     background-color: var(--input-bg);
     border: 1px solid var(--input-border);
-    border-radius: var(--radius-sm);
-    color: var(--text-primary);
+    border-radius: 8px;
+    color: var(--input-text);
     padding: 10px 12px;
     font-size: 0.9rem;
     font-family: inherit;
+    width: 100%;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -195,31 +333,42 @@ input:focus, select:focus, textarea:focus {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
+/* Critical Fix for CTA Buttons Wrapping */
 .input-with-button {
     display: flex;
     gap: 8px;
+    align-items: center;
 }
 
 .input-with-button input {
     flex: 1;
+    min-width: 0; /* Prevents flex input from overflowing */
 }
 
-/* Buttons */
+/* Buttons System */
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 16px;
-    border-radius: var(--radius-sm);
-    font-size: 0.9rem;
-    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
     cursor: pointer;
     border: none;
+    white-space: nowrap; /* Fixes CTA text breaking into 2 lines */
+    flex-shrink: 0;       /* Prevents button compression */
+    min-width: fit-content;
     transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .btn:active {
     transform: scale(0.98);
+}
+
+.btn-cta {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
 }
 
 .btn-primary {
@@ -247,7 +396,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .btn-accent:hover {
-    background-color: #059669;
+    background-color: var(--accent-emerald-hover);
 }
 
 .btn-ai {
@@ -266,10 +415,6 @@ input:focus, select:focus, textarea:focus {
     font-size: 0.8rem;
 }
 
-.btn-save:hover {
-    background-color: #059669;
-}
-
 .btn-delete {
     background-color: var(--accent-rose);
     color: #ffffff;
@@ -277,39 +422,58 @@ input:focus, select:focus, textarea:focus {
     font-size: 0.8rem;
 }
 
-.btn-delete:hover {
-    background-color: var(--accent-rose-hover);
+.btn-sm {
+    padding: 4px 10px;
+    font-size: 0.78rem;
 }
 
-/* Roster Section Header */
+/* ==========================================================================
+   Roster Header & Roster Grid
+   ========================================================================== */
+
 .roster-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
     margin-bottom: 20px;
 }
 
-.badge {
-    background-color: var(--card-border);
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 9999px;
+.roster-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-/* Roster Cards Grid */
+.filter-input {
+    width: 220px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+}
+
+.badge {
+    background-color: var(--badge-bg);
+    color: var(--badge-text);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    white-space: nowrap;
+}
+
 .roster-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 16px;
 }
 
+/* Dynamic Student Cards */
 .student-card {
     background-color: var(--input-bg);
     border: 1px solid var(--card-border);
-    border-radius: var(--radius-md);
-    padding: 16px;
+    border-radius: 12px;
+    padding: 18px;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -325,12 +489,14 @@ input:focus, select:focus, textarea:focus {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 8px;
 }
 
 .student-name {
     font-weight: 700;
-    font-size: 1.05rem;
+    font-size: 1.08rem;
     color: var(--text-primary);
+    word-break: break-word;
 }
 
 .student-email {
@@ -340,13 +506,81 @@ input:focus, select:focus, textarea:focus {
 }
 
 .student-age-badge {
-    font-size: 0.85rem;
-    color: #38bdf8;
-    background: rgba(56, 189, 248, 0.1);
-    border: 1px solid rgba(56, 189, 248, 0.2);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.25);
     padding: 2px 8px;
-    border-radius: var(--radius-sm);
+    border-radius: 6px;
+    white-space: nowrap;
+}
 
+/* Enrolled Courses Sub-section in Card */
+.student-courses-section {
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: 4px;
+}
+
+.courses-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.courses-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.courses-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.course-chip {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    color: var(--text-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.course-chip-delete {
+    cursor: pointer;
+    color: var(--accent-rose);
+    font-weight: 800;
+}
+
+.add-course-form {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.course-name-input {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+}
+
+.credits-select {
+    width: 60px;
+    font-size: 0.8rem;
+    padding: 4px 4px;
 }
 
 .student-card-actions {
@@ -359,7 +593,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .age-input {
-    width: 70px;
+    width: 65px;
     padding: 6px 8px;
     font-size: 0.85rem;
     text-align: center;
@@ -370,18 +604,21 @@ input:focus, select:focus, textarea:focus {
     margin-top: 16px;
     background-color: var(--input-bg);
     border: 1px solid var(--card-border);
-    border-radius: var(--radius-sm);
-    padding: 12px;
+    border-radius: 8px;
+    padding: 14px;
     font-size: 0.85rem;
-    color: #e2e8f0;
+    color: var(--text-primary);
     white-space: pre-wrap;
-    line-height: 1.4;
+    line-height: 1.45;
+    font-family: monospace;
 }
 
-/* AI Assistant Section */
+/* ==========================================================================
+   AI Assistant Styling
+   ========================================================================== */
+
 .ai-panel-card {
     border-color: rgba(139, 92, 246, 0.4);
-    background: linear-gradient(180deg, rgba(30, 41, 59, 1) 0%, rgba(15, 23, 42, 1) 100%);
 }
 
 .ai-header {
@@ -394,11 +631,11 @@ input:focus, select:focus, textarea:focus {
 .ai-badge {
     align-self: flex-start;
     background: rgba(139, 92, 246, 0.15);
-    border: 1px solid rgba(139, 92, 246, 0.3);
-    color: #c084fc;
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    color: var(--accent-purple);
     font-size: 0.75rem;
-    font-weight: 600;
-    padding: 3px 8px;
+    font-weight: 700;
+    padding: 3px 10px;
     border-radius: 9999px;
 }
 
@@ -417,8 +654,8 @@ input:focus, select:focus, textarea:focus {
 .ai-result-box {
     margin-top: 16px;
     background: var(--input-bg);
-    border: 1px solid rgba(139, 92, 246, 0.3);
-    border-radius: var(--radius-md);
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    border-radius: 12px;
     padding: 16px;
 }
 
@@ -430,29 +667,30 @@ input:focus, select:focus, textarea:focus {
 }
 
 .result-title {
-    font-weight: 600;
-    color: #c084fc;
+    font-weight: 700;
+    color: var(--accent-purple);
     font-size: 0.9rem;
 }
 
 .difficulty-badge {
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    font-weight: 700;
 }
 
 .difficulty-badge.easy {
     background: rgba(16, 185, 129, 0.2);
-    color: #34d399;
+    color: #10b981;
 }
 
 .difficulty-badge.medium {
     background: rgba(245, 158, 11, 0.2);
-    color: #fbbf24;
+    color: #f59e0b;
 }
 
 .difficulty-badge.hard {
     background: rgba(239, 68, 68, 0.2);
-    color: #f87171;
+    color: #ef4444;
 }
 
 .key-points-group {
@@ -463,7 +701,7 @@ input:focus, select:focus, textarea:focus {
     margin-left: 20px;
     margin-top: 4px;
     color: var(--text-secondary);
-    font-size: 0.85rem;
+    font-size: 0.88rem;
 }
 
 /* Ranked Notes Search List */
@@ -473,7 +711,7 @@ input:focus, select:focus, textarea:focus {
 
 .ai-search-results-container h4 {
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-secondary);
     margin-bottom: 10px;
 }
@@ -487,7 +725,7 @@ input:focus, select:focus, textarea:focus {
 .ranked-note-item {
     background: var(--input-bg);
     border: 1px solid var(--card-border);
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     padding: 12px;
     display: flex;
     flex-direction: column;
@@ -501,7 +739,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .note-id-label {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.8rem;
     color: var(--text-muted);
 }
@@ -509,10 +747,10 @@ input:focus, select:focus, textarea:focus {
 .score-pill {
     background: rgba(59, 130, 246, 0.15);
     border: 1px solid rgba(59, 130, 246, 0.3);
-    color: #60a5fa;
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 2px 8px;
+    color: var(--accent-blue);
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 2px 10px;
     border-radius: 9999px;
 }
 
@@ -521,17 +759,33 @@ input:focus, select:focus, textarea:focus {
     color: var(--text-primary);
 }
 
-/* Keyframes */
+/* Keyframe Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-4px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 /* ==========================================================================
-   Responsive Breakpoints
+   Responsive Breakpoints & Text Wrapping Controls
    ========================================================================== */
 
-/* Max-width 600px Media Query for Single Column Card Layout */
+/* Tablet & Intermediate Desktop (1024px and below) */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .app-header {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.9rem;
+    }
+}
+
+/* Mobile Screens (600px and below) */
 @media (max-width: 600px) {
     body {
         padding: 12px 8px;
@@ -543,30 +797,36 @@ input:focus, select:focus, textarea:focus {
 
     h1 {
         font-size: 1.6rem;
+        white-space: normal; /* Allow title to wrap gracefully on tiny mobile */
     }
 
-    .dashboard-grid {
+    .stats-bar {
         grid-template-columns: 1fr;
-        gap: 16px;
     }
 
     .roster-grid {
-        grid-template-columns: 1fr !important; /* Force single-column layout on mobile */
-    }
-
-    .student-card-actions {
-        flex-wrap: wrap;
+        grid-template-columns: 1fr !important;
     }
 
     .input-with-button {
         flex-direction: column;
+        align-items: stretch;
     }
 
     .input-with-button input {
         width: 100%;
     }
 
-    .input-with-button button {
+    .input-with-button .btn-cta {
+        width: 100%;
+        white-space: nowrap !important;
+    }
+
+    .student-card-actions {
+        flex-wrap: wrap;
+    }
+
+    .filter-input {
         width: 100%;
     }
 }

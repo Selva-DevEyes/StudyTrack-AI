@@ -1,18 +1,28 @@
 /**
- * StudyTrack AI — Frontend JavaScript
- * Handles Roster CRUD, Event Delegation, Handwritten Algorithm & AI endpoints
+ * StudyTrack AI — Frontend JavaScript Module
+ * Features: Dark/Light Theme Switching, Roster CRUD, Course Management,
+ * Stats Counter, Event Delegation, Handwritten Algorithms & AI Integration.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements ---
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeText = document.getElementById('theme-text');
+
+    const statTotalStudents = document.getElementById('stat-total-students');
+    const statAvgAge = document.getElementById('stat-avg-age');
+    const statTotalCourses = document.getElementById('stat-total-courses');
+
     const studentForm = document.getElementById('student-form');
     const studentNameInput = document.getElementById('student-name');
     const studentEmailInput = document.getElementById('student-email');
     const studentAgeInput = document.getElementById('student-age');
+    
     const rosterList = document.getElementById('roster-list');
     const rosterCountBadge = document.getElementById('roster-count-badge');
+    const rosterFilterInput = document.getElementById('roster-filter-input');
     
-    // Controls & Algorithm Elements
     const sortBySelect = document.getElementById('sort-by-select');
     const binarySearchInput = document.getElementById('binary-search-input');
     const searchStudentBtn = document.getElementById('search-student-btn');
@@ -20,12 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const generateReportBtn = document.getElementById('generate-report-btn');
     const reportOutput = document.getElementById('report-output');
 
-    // Error Banner Elements
     const errorBanner = document.getElementById('error-banner');
     const errorMessageSpan = document.getElementById('error-message');
     const closeErrorBtn = document.getElementById('close-error-btn');
 
-    // AI Helper Elements
     const aiNoteText = document.getElementById('ai-note-text');
     const summarizeBtn = document.getElementById('summarize-btn');
     const summaryResultBox = document.getElementById('summary-result');
@@ -39,12 +47,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- State ---
     let currentStudents = [];
-
-    // Base API URL (relative paths for single-process mode)
     const API_BASE = '';
 
-    // --- Helper Functions ---
+    // --- Theme Switcher Logic ---
+    function initTheme() {
+        const savedTheme = localStorage.getItem('studytrack-theme') || 'dark';
+        setTheme(savedTheme);
+    }
 
+    function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('studytrack-theme', theme);
+        if (theme === 'light') {
+            if (themeIcon) themeIcon.textContent = '🌙';
+            if (themeText) themeText.textContent = 'Dark Mode';
+        } else {
+            if (themeIcon) themeIcon.textContent = '☀️';
+            if (themeText) themeText.textContent = 'Light Mode';
+        }
+    }
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        });
+    }
+
+    initTheme();
+
+    // --- Error Banner Helpers ---
     function showError(msg) {
         if (!errorBanner || !errorMessageSpan) return;
         errorMessageSpan.textContent = msg;
@@ -61,21 +93,43 @@ document.addEventListener('DOMContentLoaded', () => {
         closeErrorBtn.addEventListener('click', clearError);
     }
 
+    // --- Stats Bar Calculator ---
+    function updateStats(students) {
+        const total = students.length;
+        if (statTotalStudents) statTotalStudents.textContent = total;
+
+        if (total === 0) {
+            if (statAvgAge) statAvgAge.textContent = '0';
+            if (statTotalCourses) statTotalCourses.textContent = '0';
+            return;
+        }
+
+        const sumAge = students.reduce((acc, s) => acc + s.age, 0);
+        const avg = (sumAge / total).toFixed(1);
+        if (statAvgAge) statAvgAge.textContent = avg;
+
+        let totalCourses = 0;
+        students.forEach(s => {
+            if (s.courses && Array.isArray(s.courses)) {
+                totalCourses += s.courses.length;
+            }
+        });
+        if (statTotalCourses) statTotalCourses.textContent = totalCourses;
+    }
+
     function updateRosterBadge(count) {
         if (rosterCountBadge) {
-            rosterCountBadge.textContent = `${count} Student${count === 1 ? '' : 's'}`;
+            rosterCountBadge.textContent = `${count} Trainee${count === 1 ? '' : 's'}`;
         }
     }
 
-    /**
-     * Constructs a student card element strictly using document.createElement()
-     */
+    // --- Dynamic Card Creation via document.createElement() ---
     function createStudentCardElement(student) {
         const card = document.createElement('div');
         card.className = 'student-card';
         card.setAttribute('data-id', student.id);
 
-        // Header section (Name & Age display)
+        // Header Section
         const header = document.createElement('div');
         header.className = 'student-card-header';
 
@@ -90,12 +144,77 @@ document.addEventListener('DOMContentLoaded', () => {
         header.appendChild(nameEl);
         header.appendChild(ageBadge);
 
-        // Email element
+        // Email Section
         const emailEl = document.createElement('div');
         emailEl.className = 'student-email';
         emailEl.textContent = student.email;
 
-        // Actions section (Number input, Save Age, Delete)
+        // Enrolled Courses Section
+        const coursesSec = document.createElement('div');
+        coursesSec.className = 'student-courses-section';
+
+        const coursesHeader = document.createElement('div');
+        coursesHeader.className = 'courses-header';
+
+        const coursesTitle = document.createElement('span');
+        coursesTitle.className = 'courses-title';
+        const courseCount = student.courses ? student.courses.length : 0;
+        coursesTitle.textContent = `Enrolled Courses (${courseCount})`;
+        coursesHeader.appendChild(coursesTitle);
+
+        const coursesList = document.createElement('div');
+        coursesList.className = 'courses-list';
+
+        if (student.courses && student.courses.length > 0) {
+            student.courses.forEach(c => {
+                const chip = document.createElement('span');
+                chip.className = 'course-chip';
+                chip.innerHTML = `${c.course_name} (${c.credits}cr) <span class="course-chip-delete" data-action="delete-course" data-course-id="${c.id}" data-student-id="${student.id}" title="Remove course">&times;</span>`;
+                coursesList.appendChild(chip);
+            });
+        } else {
+            const noCourses = document.createElement('span');
+            noCourses.className = 'text-muted';
+            noCourses.style.fontSize = '0.75rem';
+            noCourses.textContent = 'No enrolled courses';
+            coursesList.appendChild(noCourses);
+        }
+
+        // Inline Add Course Form
+        const addCourseForm = document.createElement('div');
+        addCourseForm.className = 'add-course-form';
+
+        const courseInput = document.createElement('input');
+        courseInput.type = 'text';
+        courseInput.placeholder = 'New Course...';
+        courseInput.className = 'course-name-input';
+
+        const creditsSelect = document.createElement('select');
+        creditsSelect.className = 'credits-select';
+        for (let i = 1; i <= 6; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = `${i} cr`;
+            if (i === 3) opt.selected = true;
+            creditsSelect.appendChild(opt);
+        }
+
+        const addCourseBtn = document.createElement('button');
+        addCourseBtn.type = 'button';
+        addCourseBtn.className = 'btn btn-secondary btn-sm';
+        addCourseBtn.textContent = '+ Add';
+        addCourseBtn.setAttribute('data-action', 'add-course');
+        addCourseBtn.setAttribute('data-id', student.id);
+
+        addCourseForm.appendChild(courseInput);
+        addCourseForm.appendChild(creditsSelect);
+        addCourseForm.appendChild(addCourseBtn);
+
+        coursesSec.appendChild(coursesHeader);
+        coursesSec.appendChild(coursesList);
+        coursesSec.appendChild(addCourseForm);
+
+        // Actions Section (Age update & Delete student)
         const actions = document.createElement('div');
         actions.className = 'student-card-actions';
 
@@ -104,18 +223,17 @@ document.addEventListener('DOMContentLoaded', () => {
         ageInput.className = 'age-input';
         ageInput.min = '1';
         ageInput.value = student.age;
-        ageInput.setAttribute('aria-label', `New age for ${student.name}`);
 
         const saveBtn = document.createElement('button');
         saveBtn.type = 'button';
-        saveBtn.className = 'btn btn-save';
+        saveBtn.className = 'btn btn-save btn-cta';
         saveBtn.textContent = 'Save Age';
         saveBtn.setAttribute('data-action', 'save-age');
         saveBtn.setAttribute('data-id', student.id);
 
         const deleteBtn = document.createElement('button');
         deleteBtn.type = 'button';
-        deleteBtn.className = 'btn btn-delete';
+        deleteBtn.className = 'btn btn-delete btn-cta';
         deleteBtn.textContent = 'Delete';
         deleteBtn.setAttribute('data-action', 'delete');
         deleteBtn.setAttribute('data-id', student.id);
@@ -127,44 +245,51 @@ document.addEventListener('DOMContentLoaded', () => {
         // Assemble card
         card.appendChild(header);
         card.appendChild(emailEl);
+        card.appendChild(coursesSec);
         card.appendChild(actions);
 
         return card;
     }
 
-    /**
-     * Render entire student roster list into DOM
-     */
     function renderRoster(students) {
         currentStudents = students;
+        updateStats(students);
+
+        const filterQuery = rosterFilterInput ? rosterFilterInput.value.trim().toLowerCase() : '';
+        const filtered = filterQuery 
+            ? students.filter(s => s.name.toLowerCase().includes(filterQuery) || s.email.toLowerCase().includes(filterQuery))
+            : students;
+
         rosterList.innerHTML = '';
-        if (students.length === 0) {
+        if (filtered.length === 0) {
             const emptyMsg = document.createElement('p');
             emptyMsg.className = 'text-muted';
             emptyMsg.style.padding = '20px';
-            emptyMsg.textContent = 'No students found in the roster.';
+            emptyMsg.textContent = filterQuery ? 'No matching trainees found.' : 'No trainees found in the roster.';
             rosterList.appendChild(emptyMsg);
         } else {
-            students.forEach(student => {
+            filtered.forEach(student => {
                 const cardEl = createStudentCardElement(student);
                 rosterList.appendChild(cardEl);
             });
         }
-        updateRosterBadge(students.length);
+        updateRosterBadge(filtered.length);
     }
 
-    // --- API Calls & Handlers ---
+    if (rosterFilterInput) {
+        rosterFilterInput.addEventListener('input', () => {
+            renderRoster(currentStudents);
+        });
+    }
 
-    /**
-     * Fetch all students from backend GET /students/
-     */
+    // --- API Calls ---
     async function loadRoster() {
         clearError();
         try {
             const res = await fetch(`${API_BASE}/students/`);
             if (!res.ok) {
                 const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.detail || `Failed to fetch students (Status ${res.status})`);
+                throw new Error(errData.detail || `Failed to fetch roster (Status ${res.status})`);
             }
             const students = await res.json();
             renderRoster(students);
@@ -173,12 +298,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /**
-     * Add student handler (POST /students/)
-     */
+    // --- Student Form Handler ---
     if (studentForm) {
         studentForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Prevent full page reload
+            e.preventDefault();
             clearError();
 
             const name = studentNameInput.value.trim();
@@ -186,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const age = parseInt(studentAgeInput.value, 10);
 
             if (!name || !email || isNaN(age)) {
-                showError('Please fill in all fields correctly.');
+                showError('Please fill in all required student fields.');
                 return;
             }
 
@@ -202,19 +325,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error(data.detail || `Failed to add student (Status ${res.status})`);
                 }
 
-                // Append new student to state and DOM
                 currentStudents.push(data);
-                const cardEl = createStudentCardElement(data);
-                
-                // Remove empty message if present
-                if (rosterList.children.length === 1 && rosterList.children[0].tagName === 'P') {
-                    rosterList.innerHTML = '';
-                }
-
-                rosterList.appendChild(cardEl);
-                updateRosterBadge(currentStudents.length);
-
-                // Reset form inputs
+                renderRoster(currentStudents);
                 studentForm.reset();
             } catch (err) {
                 showError(err.message);
@@ -222,22 +334,66 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /**
-     * EVENT DELEGATION on #roster-list for Save Age and Delete
-     */
+    // --- Event Delegation on #roster-list ---
     if (rosterList) {
         rosterList.addEventListener('click', async (e) => {
-            const targetBtn = e.target.closest('button[data-action]');
-            if (!targetBtn) return;
+            // 1. Delete Course Action
+            const deleteCourseBtn = e.target.closest('[data-action="delete-course"]');
+            if (deleteCourseBtn) {
+                const courseId = parseInt(deleteCourseBtn.getAttribute('data-course-id'), 10);
+                const studentId = parseInt(deleteCourseBtn.getAttribute('data-student-id'), 10);
+                clearError();
+                try {
+                    const res = await fetch(`${API_BASE}/courses/${courseId}`, { method: 'DELETE' });
+                    if (!res.ok) {
+                        const errData = await res.json().catch(() => ({}));
+                        throw new Error(errData.detail || 'Failed to delete course');
+                    }
+                    loadRoster(); // Reload to refresh course lists
+                } catch (err) {
+                    showError(err.message);
+                }
+                return;
+            }
 
-            const action = targetBtn.getAttribute('data-action');
-            const studentId = parseInt(targetBtn.getAttribute('data-id'), 10);
-            const cardEl = targetBtn.closest('.student-card');
+            // 2. Add Course Action
+            const addCourseBtn = e.target.closest('[data-action="add-course"]');
+            if (addCourseBtn) {
+                const studentId = parseInt(addCourseBtn.getAttribute('data-id'), 10);
+                const cardEl = addCourseBtn.closest('.student-card');
+                const nameInput = cardEl.querySelector('.course-name-input');
+                const creditsSelect = cardEl.querySelector('.credits-select');
+                const courseName = nameInput.value.trim();
+                const credits = parseInt(creditsSelect.value, 10);
 
-            if (!studentId || !cardEl) return;
-            clearError();
+                if (!courseName) {
+                    showError('Please enter a course name.');
+                    return;
+                }
 
-            if (action === 'save-age') {
+                clearError();
+                try {
+                    const res = await fetch(`${API_BASE}/courses/`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ course_name: courseName, credits, student_id: studentId })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        throw new Error(data.detail || 'Failed to add course');
+                    }
+                    loadRoster(); // Reload roster to reflect new course
+                } catch (err) {
+                    showError(err.message);
+                }
+                return;
+            }
+
+            // 3. Save Age Action
+            const saveAgeBtn = e.target.closest('[data-action="save-age"]');
+            if (saveAgeBtn) {
+                const studentId = parseInt(saveAgeBtn.getAttribute('data-id'), 10);
+                const cardEl = saveAgeBtn.closest('.student-card');
                 const ageInput = cardEl.querySelector('.age-input');
                 const newAge = parseInt(ageInput.value, 10);
 
@@ -246,64 +402,56 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
+                clearError();
                 try {
                     const res = await fetch(`${API_BASE}/students/${studentId}`, {
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ age: newAge })
                     });
-
                     const data = await res.json();
                     if (!res.ok) {
-                        throw new Error(data.detail || `Failed to update age (Status ${res.status})`);
+                        throw new Error(data.detail || 'Failed to update age');
                     }
 
-                    // Update UI age display
                     const ageBadge = cardEl.querySelector('.student-age-badge');
-                    if (ageBadge) {
-                        ageBadge.textContent = `Age: ${data.age}`;
-                    }
+                    if (ageBadge) ageBadge.textContent = `Age: ${data.age}`;
 
-                    // Update local state
                     const idx = currentStudents.findIndex(s => s.id === studentId);
                     if (idx !== -1) currentStudents[idx].age = data.age;
-
+                    updateStats(currentStudents);
                 } catch (err) {
                     showError(err.message);
                 }
+                return;
+            }
 
-            } else if (action === 'delete') {
+            // 4. Delete Student Action
+            const deleteStudentBtn = e.target.closest('[data-action="delete"]');
+            if (deleteStudentBtn) {
+                const studentId = parseInt(deleteStudentBtn.getAttribute('data-id'), 10);
+                const cardEl = deleteStudentBtn.closest('.student-card');
+
+                clearError();
                 try {
-                    const res = await fetch(`${API_BASE}/students/${studentId}`, {
-                        method: 'DELETE'
-                    });
-
+                    const res = await fetch(`${API_BASE}/students/${studentId}`, { method: 'DELETE' });
                     if (!res.ok) {
                         const data = await res.json().catch(() => ({}));
-                        throw new Error(data.detail || `Failed to delete student (Status ${res.status})`);
+                        throw new Error(data.detail || 'Failed to delete student');
                     }
 
-                    // Remove card from DOM
                     cardEl.remove();
-
-                    // Update local state
                     currentStudents = currentStudents.filter(s => s.id !== studentId);
-                    updateRosterBadge(currentStudents.length);
-
-                    if (currentStudents.length === 0) {
-                        renderRoster([]);
-                    }
-
+                    renderRoster(currentStudents);
                 } catch (err) {
                     showError(err.message);
                 }
+                return;
             }
         });
     }
 
-    // --- Algorithm Endpoints Integration (Part 2) ---
-
-    // 1. Insertion Sort Dropdown Handler
+    // --- Handwritten Algorithms Integration ---
     if (sortBySelect) {
         sortBySelect.addEventListener('change', async () => {
             const field = sortBySelect.value;
@@ -326,7 +474,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. Binary Search Button Handler
     if (searchStudentBtn && binarySearchInput) {
         searchStudentBtn.addEventListener('click', async () => {
             const queryName = binarySearchInput.value.trim();
@@ -345,7 +492,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error(data.detail || 'Binary search failed.');
                 }
                 const student = await res.json();
-                // Highlight found student in roster
                 renderRoster([student]);
                 showError(`Found student: ${student.name} (Age ${student.age}, ${student.email})`);
             } catch (err) {
@@ -354,7 +500,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Roster Report Button Handler
     if (generateReportBtn && minAgeReportInput && reportOutput) {
         generateReportBtn.addEventListener('click', async () => {
             const minAge = parseInt(minAgeReportInput.value, 10);
@@ -378,9 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- AI Assistant Integration (Part 3) ---
-
-    // 1. Note Summarizer Handler
+    // --- AI Assistant Integration ---
     if (summarizeBtn && aiNoteText) {
         summarizeBtn.addEventListener('click', async () => {
             const text = aiNoteText.value;
@@ -398,8 +541,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const summary = await res.json();
-
-                // Populate Summary Result Box
                 if (summaryTopic) summaryTopic.textContent = summary.topic;
                 if (summaryDifficulty) {
                     summaryDifficulty.textContent = summary.difficulty;
@@ -420,16 +561,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                     }
                 }
-
                 if (summaryResultBox) summaryResultBox.classList.remove('hidden');
-
             } catch (err) {
                 showError(err.message);
             }
         });
     }
 
-    // 2. Semantic Search Handler
     if (aiSearchBtn && aiSearchQuery) {
         aiSearchBtn.addEventListener('click', async () => {
             const query = aiSearchQuery.value.trim();
@@ -442,7 +580,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const rankedResults = await res.json();
-
                 if (rankedNotesList) {
                     rankedNotesList.innerHTML = '';
                     rankedResults.forEach(item => {
@@ -469,19 +606,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         noteCard.appendChild(scoreRow);
                         noteCard.appendChild(textP);
-
                         rankedNotesList.appendChild(noteCard);
                     });
                 }
-
                 if (aiSearchResultsContainer) aiSearchResultsContainer.classList.remove('hidden');
-
             } catch (err) {
                 showError(err.message);
             }
         });
     }
 
-    // Initialize Page
+    // Initial Load
     loadRoster();
 });

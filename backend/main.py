@@ -1,5 +1,10 @@
 import os
+import sys
 from typing import List, Optional
+
+# Ensure backend directory is in python search path
+sys.path.append(os.path.dirname(__file__))
+
 from fastapi import FastAPI, Depends, HTTPException, status, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -281,8 +286,4 @@ def search_study_notes(query: str = Query("", description="Query string for sema
 
 frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
 if os.path.exists(frontend_path):
-    app.mount("/static", StaticFiles(directory=frontend_path), name="static")
-
-    @app.get("/", include_in_schema=False)
-    def serve_frontend():
-        return FileResponse(os.path.join(frontend_path, "index.html"))
+    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="static")

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,31 +8,57 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
         <!-- Header -->
         <header class="app-header">
-            <div class="logo-group">
-                <span class="logo-icon">⚡</span>
-                <h1>StudyTrack AI</h1>
+            <div class="header-main">
+                <div class="logo-group">
+                    <span class="logo-icon">⚡</span>
+                    <h1>StudyTrack AI</h1>
+                </div>
+                <div class="header-actions">
+                    <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle Light/Dark Theme">
+                        <span id="theme-icon">☀️</span>
+                        <span id="theme-text">Light Mode</span>
+                    </button>
+                </div>
             </div>
             <p class="tagline">Intelligent Full-Stack Learning & Trainee Management Platform</p>
+            
+            <!-- Quick Stats Bar -->
+            <div class="stats-bar">
+                <div class="stat-card">
+                    <span class="stat-label">Total Trainees</span>
+                    <span id="stat-total-students" class="stat-value">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Average Age</span>
+                    <span id="stat-avg-age" class="stat-value">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Active Courses</span>
+                    <span id="stat-total-courses" class="stat-value">0</span>
+                </div>
+            </div>
         </header>
 
-        <!-- Global Error Banner -->
+        <!-- Global Error / Status Banner -->
         <div id="error-banner" class="error-banner hidden" role="alert">
             <span id="error-message">An error occurred.</span>
             <button id="close-error-btn" class="close-banner-btn" aria-label="Close error banner">&times;</button>
         </div>
 
         <main class="dashboard-grid">
-            <!-- Left Column: Controls & Add Form -->
+            <!-- Left Column: Sidebar Operations & Forms -->
             <section class="sidebar-section">
                 <!-- Add Student Form Card -->
                 <div class="card form-card">
-                    <h2>Add New Student</h2>
+                    <div class="card-header">
+                        <h2>Add New Trainee</h2>
+                    </div>
                     <form id="student-form" class="student-form" novalidate>
                         <div class="form-group">
                             <label for="student-name">Full Name</label>
@@ -46,13 +72,15 @@
                             <label for="student-age">Age</label>
                             <input type="number" id="student-age" min="1" placeholder="e.g. 22" required>
                         </div>
-                        <button type="submit" class="btn btn-primary" id="add-student-btn">+ Add Student</button>
+                        <button type="submit" class="btn btn-primary btn-cta" id="add-student-btn">+ Add Trainee</button>
                     </form>
                 </div>
 
-                <!-- Algorithms Toolbar -->
+                <!-- Roster Operations Card -->
                 <div class="card toolbar-card">
-                    <h2>Roster Operations</h2>
+                    <div class="card-header">
+                        <h2>Roster Operations</h2>
+                    </div>
                     <div class="toolbar-actions">
                         <div class="form-group">
                             <label for="sort-by-select">Sort Roster By</label>
@@ -67,7 +95,7 @@
                             <label for="binary-search-input">Binary Search by Name</label>
                             <div class="input-with-button">
                                 <input type="text" id="binary-search-input" placeholder="Exact student name...">
-                                <button type="button" id="search-student-btn" class="btn btn-secondary">Search</button>
+                                <button type="button" id="search-student-btn" class="btn btn-secondary btn-cta">Search</button>
                             </div>
                         </div>
 
@@ -75,7 +103,7 @@
                             <label for="min-age-report-input">Age Filter & Roster Report</label>
                             <div class="input-with-button">
                                 <input type="number" id="min-age-report-input" min="1" value="21" placeholder="Min age...">
-                                <button type="button" id="generate-report-btn" class="btn btn-accent">Generate Report</button>
+                                <button type="button" id="generate-report-btn" class="btn btn-accent btn-cta">Generate Report</button>
                             </div>
                         </div>
                     </div>
@@ -85,18 +113,23 @@
                 </div>
             </section>
 
-            <!-- Right Column: Student Roster & AI Panel -->
+            <!-- Right Column: Student Roster & AI Assistant -->
             <section class="main-content-section">
                 <!-- Roster Section -->
                 <div class="card roster-section-card">
                     <div class="roster-header">
-                        <h2>Student Roster</h2>
-                        <span id="roster-count-badge" class="badge">0 Students</span>
+                        <div class="roster-title-group">
+                            <h2>Trainee Roster</h2>
+                            <span id="roster-count-badge" class="badge">0 Trainees</span>
+                        </div>
+                        <div class="roster-filter-group">
+                            <input type="text" id="roster-filter-input" placeholder="Filter roster by name..." class="filter-input">
+                        </div>
                     </div>
 
-                    <!-- Roster List Container -->
+                    <!-- Roster Grid Container -->
                     <div id="roster-list" class="roster-grid">
-                        <!-- Student cards rendered via JS document.createElement() -->
+                        <!-- Dynamic Student cards -->
                     </div>
                 </div>
 
@@ -114,7 +147,7 @@
                             <label for="ai-note-text">Paste Lecture / Study Notes</label>
                             <textarea id="ai-note-text" rows="4" placeholder="Enter study notes here... (e.g. Insertion sort builds a sorted list one element at a time.)"></textarea>
                         </div>
-                        <button type="button" id="summarize-btn" class="btn btn-ai">Summarize Notes</button>
+                        <button type="button" id="summarize-btn" class="btn btn-ai btn-cta">Summarize Notes</button>
 
                         <div id="summary-result" class="ai-result-box hidden">
                             <div class="result-header">
@@ -138,7 +171,7 @@
                             <label for="ai-search-query">Query AI Note Embeddings</label>
                             <div class="input-with-button">
                                 <input type="text" id="ai-search-query" placeholder="e.g. binary search midpoint or sql join">
-                                <button type="button" id="ai-search-btn" class="btn btn-ai">Search Notes</button>
+                                <button type="button" id="ai-search-btn" class="btn btn-ai btn-cta">Search Notes</button>
                             </div>
                         </div>
 
