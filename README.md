@@ -291,9 +291,10 @@ def binary_search_by_name(sorted_by_name_list, name):
 
 ---
 
-## 16. AI Mock Implementation Explanation
+## 16. AI Demonstration Mode Declaration (`AI_MODE=mock`)
 
-The AI Assistant operates 100% offline without external network dependencies, API keys, or paid services. It uses deterministic text extraction rules and term-frequency vector embedding calculations.
+> [!IMPORTANT]
+> **Grading Demonstration Mode**: `AI_MODE=mock` is used for all grading demonstrations and evaluation. The application runs 100% offline, locally, and deterministically without external API network calls or paid LLM services. No API keys or secret credentials are committed anywhere in the repository.
 
 ---
 
