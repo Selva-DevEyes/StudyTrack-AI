@@ -924,43 +924,54 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 /* ==========================================================================
-   Footer Component & Capstone Attribution
+   Footer Component & Executive Capstone Attribution
    ========================================================================== */
 
 .app-footer {
     text-align: center;
-    padding: 24px 16px;
+    padding: 18px 24px;
     margin-top: 32px;
     border-top: 1px solid var(--card-border);
     background-color: var(--card-bg);
     border-radius: 12px;
 }
 
-.footer-content {
+.footer-inline {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 6px;
-}
-
-.footer-project {
-    font-size: 0.95rem;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.88rem;
     color: var(--text-color);
-    font-weight: 600;
+    margin: 0;
 }
 
-.footer-author {
-    font-size: 0.9rem;
-    color: var(--accent-blue);
+.footer-brand {
     font-weight: 500;
 }
 
-.footer-author strong {
+.footer-brand strong {
+    color: var(--accent-blue);
     font-weight: 700;
 }
 
+.footer-author {
+    color: var(--text-color);
+}
+
+.footer-author strong {
+    color: var(--accent-blue);
+    font-weight: 700;
+}
+
+.footer-dot {
+    color: var(--accent-blue);
+    font-weight: 800;
+    opacity: 0.7;
+}
+
 .footer-copy {
-    font-size: 0.78rem;
     color: var(--text-muted);
-    margin-top: 4px;
+    font-size: 0.82rem;
 }

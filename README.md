@@ -6,7 +6,7 @@ StudyTrack AI is a production-ready, full-stack academic learning and trainee ma
 
 ## 1. Project Overview & Author Identification
 
-**Capstone Project Author**: **Selvam (SelvamSDE / SelvamShunmugam)**
+**Capstone Project Author**: **SelvamSDE**
 
 StudyTrack AI provides academic administrators and trainees with a unified dashboard to:
 - Manage student rosters and enrolled courses with full CRUD capabilities.
