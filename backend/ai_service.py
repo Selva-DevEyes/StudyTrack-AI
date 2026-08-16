@@ -27,22 +27,27 @@ VOCABULARY = [
 # Exact 5 study notes specification
 DEFAULT_NOTES = [
     {
+        "id": 1,
         "note_id": 1,
         "text": "Binary search requires a sorted array and repeatedly halves the search range using a midpoint comparison."
     },
     {
+        "id": 2,
         "note_id": 2,
         "text": "Insertion sort builds a sorted list one element at a time by shifting larger elements to the right."
     },
     {
+        "id": 3,
         "note_id": 3,
         "text": "FastAPI uses Pydantic models to validate request bodies and automatically generates Swagger documentation."
     },
     {
+        "id": 4,
         "note_id": 4,
         "text": "SQL joins combine rows from two tables using a matching column, such as inner join, left join, and full join."
     },
     {
+        "id": 5,
         "note_id": 5,
         "text": "Prompt engineering structures a task, context, constraints, and desired output format to guide an LLM's response."
     }
@@ -158,7 +163,8 @@ def search_notes(query: str) -> List[Dict[str, Any]]:
         note_vec = mock_embed(note["text"])
         sim_score = cosine_similarity(query_vec, note_vec)
         results.append({
-            "note_id": note["note_id"],
+            "id": note["id"],
+            "note_id": note["id"],
             "text": note["text"],
             "score": round(sim_score, 4)
         })

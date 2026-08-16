@@ -125,8 +125,14 @@ def test_course_crud_and_aggregate_count(client):
     assert del_res.status_code == 200
 
 
-def test_insertion_sort_endpoints(client):
-    """Test GET /students/sorted?by=age and GET /students/sorted?by=name."""
+def test_insertion_sort_inplace_and_endpoints(client):
+    """Test in-place insertion_sort_by_field and GET /students/sorted?by=age."""
+    # Test in-place mutation
+    sample = [{'name': 'Bob', 'age': 25}, {'name': 'Alice', 'age': 20}]
+    res = algorithms.insertion_sort_by_field(sample, 'age')
+    assert res is sample
+    assert sample[0]['name'] == 'Alice'
+
     r_age = client.get("/students/sorted?by=age")
     assert r_age.status_code == 200
     ages = [s["age"] for s in r_age.json()]
@@ -149,17 +155,17 @@ def test_binary_search_endpoint(client):
 
 
 def test_report_endpoint(client):
-    """Test GET /students/report?min_age=..."""
+    """Test GET /students/report?min_age=... format '[Age {age}] {name} <{email}>'"""
     r = client.get("/students/report?min_age=21")
     assert r.status_code == 200
     res = r.json()
     assert "report" in res
     assert res["count_meeting_min_age"] == 5
+    assert "[Age 22] Aditi Rao <aditi.rao@example.com>" in res["report"]
 
 
 def test_ai_summarizer_endpoint(client):
     """Test POST /assistant/summarize with normal and empty input."""
-    # Normal input
     r1 = client.post("/assistant/summarize", json={"text": "Pydantic Models\nPydantic handles data validation. It generates schemas. FastAPI integrates it."})
     assert r1.status_code == 200
     res1 = r1.json()
@@ -167,7 +173,6 @@ def test_ai_summarizer_endpoint(client):
     assert len(res1["key_points"]) == 3
     assert res1["difficulty"] == "easy"
 
-    # Empty input
     r2 = client.post("/assistant/summarize", json={"text": "   "})
     assert r2.status_code == 200
     res2 = r2.json()
@@ -175,19 +180,17 @@ def test_ai_summarizer_endpoint(client):
 
 
 def test_ai_semantic_search_endpoint(client):
-    """Test GET /assistant/search?query=... for ranked results and zero-vector handling."""
-    # Relevant query
+    """Test GET /assistant/search?query=... checking id field and ranking."""
     r1 = client.get("/assistant/search?query=fastapi pydantic validate")
     assert r1.status_code == 200
     res1 = r1.json()
     assert len(res1) == 5
-    assert res1[0]["note_id"] == 3 # Note 3 is about FastAPI and Pydantic
+    assert res1[0]["id"] == 3 # Note 3 is about FastAPI and Pydantic
 
-    # Zero vector query
     r2 = client.get("/assistant/search?query=unmatched terms 12345")
     assert r2.status_code == 200
     res2 = r2.json()
     assert len(res2) == 5
     for note in res2:
         assert note["score"] == 0.0
-    assert [n["note_id"] for n in res2] == [1, 2, 3, 4, 5]
+    assert [n["id"] for n in res2] == [1, 2, 3, 4, 5]
