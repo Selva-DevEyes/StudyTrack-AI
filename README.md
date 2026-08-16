@@ -431,17 +431,34 @@ Test coverage includes:
 
 ---
 
-## 24. Git Workflow & Remote Repository Setup
+## 24. Git Workflow & Feature Branch History
 
-This repository is maintained as ONE single public repository.
+This repository is maintained as ONE single public repository following a strict Git feature branch workflow:
 
-### Initial Git Repository Commands
+### Feature Branch Commands & Merge Workflow
 ```bash
+# 1. Initialize repository on main branch
 git init
 git add .
 git commit -m "Initial commit - StudyTrack AI complete platform"
 git branch -M main
 git remote add origin https://github.com/Selva-DevEyes/StudyTrack-AI.git
+
+# 2. Create and switch to feature branch
+git checkout -b feature/algorithms-and-ai
+
+# 3. Make multiple commits on feature branch
+git add backend/algorithms.py && git commit -m "Refine insertion sort in-place helper and roster report format"
+git add backend/ai_service.py && git commit -m "Tune AI mock rules and id field schema"
+
+# 4. Push feature branch to remote
+git push -u origin feature/algorithms-and-ai
+
+# 5. Merge feature branch into main preserving commit history with --no-ff
+git checkout main
+git merge --no-ff feature/algorithms-and-ai -m "Merge branch 'feature/algorithms-and-ai' into main"
+
+# 6. Push main branch to remote
 git push -u origin main
 ```
 

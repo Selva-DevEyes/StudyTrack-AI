@@ -579,7 +579,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         const labelSpan = document.createElement('span');
                         labelSpan.className = 'note-id-label';
-                        labelSpan.textContent = `Note ID: ${item.note_id}`;
+                        labelSpan.textContent = `Note ID: ${item.id || item.note_id}`;
 
                         const scorePill = document.createElement('span');
                         scorePill.className = 'score-pill';

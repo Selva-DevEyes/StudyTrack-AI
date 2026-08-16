@@ -1,6 +1,7 @@
 """
 Handwritten algorithms module for StudyTrack AI.
-Implements Insertion Sort, Binary Search, and Roster Aggregation without forbidden built-ins.
+Implements Insertion Sort (O(N^2)), Binary Search (O(log N)), and Roster Aggregation.
+All algorithms are handwritten without relying on forbidden Python built-ins.
 """
 
 from typing import List, Dict, Any, Union
@@ -8,42 +9,37 @@ from typing import List, Dict, Any, Union
 
 def insertion_sort_by_field(students: List[Union[Dict[str, Any], Any]], field: str) -> List[Union[Dict[str, Any], Any]]:
     """
-    Handwritten Insertion Sort algorithm.
-    Sorts a list of student dicts or SQLAlchemy objects by field ('age' or 'name') in ascending order.
+    Handwritten Insertion Sort algorithm (in-place modification).
+    Sorts the passed-in list of student dicts or SQLAlchemy objects by field ('age' or 'name') in ascending order.
     
     Requirements:
+    - In-place mutation of input list
     - Manual implementation
     - Outer loop starting from index 1
     - Visible while loop shifting larger elements right
     - Place the key element
     - Ascending order
-    - NO calls to sorted() or .sort()
+    - NO calls to sorted() or .sort() inside function body
     """
-    # Helper to get field value safely whether item is dict or object
     def get_val(item, f):
         if isinstance(item, dict):
             return item[f]
         return getattr(item, f)
 
-    # Create a shallow copy to avoid mutating caller's original list in-place unexpectedly
-    arr = list(students)
-    n = len(arr)
-
-    # Outer loop starting from index 1
-    for i in range(1, n):
-        key_item = arr[i]
+    for i in range(1, len(students)):
+        key_item = students[i]
         key_val = get_val(key_item, field)
         j = i - 1
 
         # Visible while loop shifting larger elements right
-        while j >= 0 and get_val(arr[j], field) > key_val:
-            arr[j + 1] = arr[j]
+        while j >= 0 and get_val(students[j], field) > key_val:
+            students[j + 1] = students[j]
             j -= 1
 
         # Place key item in correct sorted position
-        arr[j + 1] = key_item
+        students[j + 1] = key_item
 
-    return arr
+    return students
 
 
 def binary_search_by_name(sorted_by_name_list: List[Union[Dict[str, Any], Any]], name: str) -> Union[Dict[str, Any], Any, int]:
@@ -99,39 +95,15 @@ def count_students_meeting_min_age(students: List[Union[Dict[str, Any], Any]], m
     return count
 
 
-def format_roster_report(students: List[Union[Dict[str, Any], Any]], min_age: int) -> str:
+def format_roster_report(students: List[Union[Dict[str, Any], Any]]) -> str:
     """
-    Generates a structured text report summarizing roster metrics and eligible students.
+    Formats the student roster into a string report with one line per student:
+    "[Age {age}] {name} <{email}>"
     """
-    def get_name(item):
-        return item["name"] if isinstance(item, dict) else getattr(item, "name")
-
-    def get_age(item):
-        return item["age"] if isinstance(item, dict) else getattr(item, "age")
-
-    def get_email(item):
-        return item["email"] if isinstance(item, dict) else getattr(item, "email")
-
-    total_count = len(students)
-    qualifying_count = count_students_meeting_min_age(students, min_age)
-
-    report_lines = [
-        "============================================",
-        "          STUDYTRACK ROSTER REPORT          ",
-        "============================================",
-        f"Total Registered Students: {total_count}",
-        f"Filter Criterion: Minimum Age >= {min_age}",
-        f"Qualifying Students Count: {qualifying_count}",
-        "--------------------------------------------",
-        "Qualifying Students List:"
-    ]
-
-    qualifying_students = [s for s in students if get_age(s) >= min_age]
-    if not qualifying_students:
-        report_lines.append("  (No students meet the specified age threshold)")
-    else:
-        for s in qualifying_students:
-            report_lines.append(f"  • {get_name(s)} | Age: {get_age(s)} | Email: {get_email(s)}")
-
-    report_lines.append("============================================")
-    return "\n".join(report_lines)
+    lines = []
+    for s in students:
+        name = s["name"] if isinstance(s, dict) else getattr(s, "name")
+        age = s["age"] if isinstance(s, dict) else getattr(s, "age")
+        email = s["email"] if isinstance(s, dict) else getattr(s, "email")
+        lines.append(f"[Age {age}] {name} <{email}>")
+    return "\n".join(lines)
