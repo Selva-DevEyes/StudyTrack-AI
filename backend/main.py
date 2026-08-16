@@ -133,6 +133,15 @@ def get_roster_report(
     }
 
 
+@app.post("/students/reset-seed")
+def reset_seed_data(db: Session = Depends(get_db)):
+    """
+    Reset and re-seed student roster with updated names from seed_data.py.
+    """
+    seed_data.seed_data_if_empty(db=db, force=True)
+    return {"message": "Roster successfully re-seeded from seed_data.py"}
+
+
 @app.get("/students/{student_id}", response_model=schemas.StudentResponse)
 def read_student(student_id: int, db: Session = Depends(get_db)):
     """Retrieve a single student by ID."""

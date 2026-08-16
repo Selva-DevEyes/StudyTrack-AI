@@ -41,7 +41,7 @@ def test_seed_data_on_startup(client):
     students = response.json()
     assert len(students) == 8
     names = [s["name"] for s in students]
-    assert "Aditi Rao" in names
+    assert "Selvam" in names
     assert "Sameer Khan" in names
 
 
@@ -146,9 +146,9 @@ def test_insertion_sort_inplace_and_endpoints(client):
 
 def test_binary_search_endpoint(client):
     """Test GET /students/search?name=... with found and 404 cases."""
-    r_found = client.get("/students/search?name=Aditi Rao")
+    r_found = client.get("/students/search?name=Selvam")
     assert r_found.status_code == 200
-    assert r_found.json()["name"] == "Aditi Rao"
+    assert r_found.json()["name"] == "Selvam"
 
     r_notfound = client.get("/students/search?name=Ghost User")
     assert r_notfound.status_code == 404
@@ -160,8 +160,8 @@ def test_report_endpoint(client):
     assert r.status_code == 200
     res = r.json()
     assert "report" in res
-    assert res["count_meeting_min_age"] == 5
-    assert "[Age 22] Aditi Rao <aditi.rao@example.com>" in res["report"]
+    assert res["count_meeting_min_age"] == 6
+    assert "[Age 32] Selvam <selvam@example.com>" in res["report"]
 
 
 def test_ai_summarizer_endpoint(client):
