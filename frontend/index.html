@@ -12,9 +12,9 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
+        <!-- Header & Nav -->
         <header class="app-header">
-            <div class="header-main">
+            <nav class="header-main">
                 <div class="logo-group">
                     <span class="logo-icon">⚡</span>
                     <h1>StudyTrack AI</h1>
@@ -25,7 +25,7 @@
                         <span id="theme-text">Light Mode</span>
                     </button>
                 </div>
-            </div>
+            </nav>
             <p class="tagline">Intelligent Full-Stack Learning & Trainee Management Platform</p>
             
             <!-- Quick Stats Bar -->
@@ -127,10 +127,10 @@
                         </div>
                     </div>
 
-                    <!-- Roster Grid Container -->
-                    <div id="roster-list" class="roster-grid">
+                    <!-- Roster Container Section carrying id="roster-list" -->
+                    <section id="roster-list" class="roster-grid">
                         <!-- Dynamic Student cards -->
-                    </div>
+                    </section>
                 </div>
 
                 <!-- AI Helper Panel Section -->
@@ -183,6 +183,11 @@
                 </div>
             </section>
         </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>&copy; StudyTrack AI — Intelligent Full-Stack Learning & Trainee Management Platform</p>
+        </footer>
     </div>
 
     <script src="app.js"></script>

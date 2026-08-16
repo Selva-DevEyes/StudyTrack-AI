@@ -126,7 +126,7 @@ def get_roster_report(
     """
     students = crud.get_students(db=db, limit=1000)
     count = algorithms.count_students_meeting_min_age(students, min_age=min_age)
-    report_text = algorithms.format_roster_report(students, min_age=min_age)
+    report_text = algorithms.format_roster_report(students)
     return {
         "report": report_text,
         "count_meeting_min_age": count
