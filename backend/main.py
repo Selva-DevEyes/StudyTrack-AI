@@ -284,6 +284,9 @@ def search_study_notes(query: str = Query("", description="Query string for sema
 
 # --- Static Files / Frontend Serving ---
 
-frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
+backend_dir = os.path.dirname(os.path.abspath(__file__))
+frontend_path = os.path.abspath(os.path.join(backend_dir, "..", "frontend"))
+
 if os.path.exists(frontend_path):
-    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="static")
+    app.mount("/static", StaticFiles(directory=frontend_path), name="static_files")
+    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="static_root")
